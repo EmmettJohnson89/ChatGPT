@@ -10,9 +10,25 @@ import {
   Input,
   Checkbox,
 } from "@material-tailwind/react";
+import axios from "axios";
 
 export function NewKnowledgeDialog({ open, setOpen }) {
   const handleOpen = () => setOpen((cur) => !cur);
+
+  const handleCreate = () => {
+    axios.post(`${import.meta.env.VITE_SERVER_ENDPOINT}/add_knowledge`, {
+      user_id: '123',
+      knowledge_name: 'react',
+      knowledge_urls: ['https://react.org']
+    })
+    .then(res => {
+      console.log(res);
+    })
+    .catch(err => {
+      console.log(err);
+    })
+    setOpen(false);
+  };
 
   return (
     <>
@@ -48,7 +64,7 @@ export function NewKnowledgeDialog({ open, setOpen }) {
             </div>
           </CardBody>
           <CardFooter className="pt-6">
-            <Button className="text-sm" variant="gradient" onClick={handleOpen} fullWidth>
+            <Button className="text-sm" variant="gradient" onClick={handleCreate} fullWidth>
               + Create
             </Button>
           </CardFooter>

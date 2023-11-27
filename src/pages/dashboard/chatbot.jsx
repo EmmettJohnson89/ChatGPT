@@ -15,6 +15,7 @@ import { AnimationMessage } from "@/widgets/cards";
 import { Configuration, OpenAIApi } from 'openai';
 import useSpeechToText from 'react-hook-speech-to-text';
 import 'dotenv';
+import axios from "axios";
 
 
 export function Chatbot() {
@@ -50,6 +51,19 @@ export function Chatbot() {
 
   const handleSubmit = async (e, t) => {
     e.preventDefault();
+
+    axios.post(`${import.meta.env.VITE_SERVER_ENDPOINT}/user_query`, {
+      user_id: '123',
+      knowledge_id: '234',
+      query: 'explain about react'
+    })
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
     if (!question) {
       return;
     }
@@ -134,7 +148,7 @@ export function Chatbot() {
                 <div className="mt-2 pr-3" key={index}>
                   <div className="flex flex-col items-end">
                     <div className="flex flex-row">
-                      <div className="text-right text-xl bg-gray-200 text-white p-3 rounded-l-2xl rounded-br-2xl">
+                      <div className="text-right text-xl bg-blue-500 text-white p-3 rounded-l-2xl rounded-br-2xl">
                         {value.question}
                       </div>
                       <Avatar
