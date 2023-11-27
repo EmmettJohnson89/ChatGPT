@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import {
   Typography,
@@ -18,11 +18,13 @@ import 'dotenv';
 
 
 export function Chatbot() {
+  const listRef = useRef(null);
   const API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 
   const configuration = new Configuration({
     apiKey: API_KEY,
   });
+  delete configuration.baseOptions.headers['User-Agent'];
 
   const {
     error,
@@ -79,7 +81,6 @@ export function Chatbot() {
         'Authorization': 'Bearer ' + String(API_KEY)
       }
     });
-    console.log(response.data);
 
     if (response.data.choices[0].text) {
       setStoredValues([
@@ -91,7 +92,8 @@ export function Chatbot() {
       ]);
       setQuestion("");
     }
-    setLoading(false)
+    setLoading(false);
+    listRef.current?.lastElementChild?.scrollIntoView();
   }
 
   const handleMic = () => {
@@ -125,14 +127,14 @@ export function Chatbot() {
           </Typography>
         </CardHeader>
         <CardBody className="p-0 flex flex-col gap-4 px-2 py-4 md:px-6 lg:px-10 grow">
-          <div className="overflow-y-auto grow h-0">
+          <div className="overflow-y-auto grow h-0" ref={listRef}>
             <div className="text-xl bg-blue-gray-800 mt-2 py-2 px-4 rounded-r-3xl rounded-bl-3xl text-white">I'm a ChatGPT, How can I assist you?</div>
             {
               storedValues.length !== 0 && storedValues.map((value, index) => (
                 <div className="mt-2 pr-3" key={index}>
                   <div className="flex flex-col items-end">
                     <div className="flex flex-row">
-                      <div className="text-right text-xl bg-blue-gray-800 text-white p-3 rounded-l-2xl rounded-br-2xl">
+                      <div className="text-right text-xl bg-gray-200 text-white p-3 rounded-l-2xl rounded-br-2xl">
                         {value.question}
                       </div>
                       <Avatar
@@ -153,7 +155,7 @@ export function Chatbot() {
                         variant="circular"
                         className={`cursor-pointer border-2 border-white`}
                       />
-                      <div className="text-xl bg-gray-200 mt-2 p-3 rounded-r-3xl rounded-bl-3xl flex flex-row">
+                      <div className="text-xl bg-blue-gray-800 mt-2 p-3 rounded-r-3xl rounded-bl-3xl flex flex-row text-white">
                         <div>
                           <AnimationMessage text={value.answer} />
                         </div>
