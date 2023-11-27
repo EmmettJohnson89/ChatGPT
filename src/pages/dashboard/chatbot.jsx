@@ -125,14 +125,14 @@ export function Chatbot() {
           </Typography>
         </CardHeader>
         <CardBody className="p-0 flex flex-col gap-4 px-2 py-4 md:px-6 lg:px-10 grow">
-          <div className="overflow-y-auto grow">
+          <div className="overflow-y-auto grow h-0">
             <div className="text-xl bg-blue-gray-800 mt-2 py-2 px-4 rounded-r-3xl rounded-bl-3xl text-white">I'm a ChatGPT, How can I assist you?</div>
             {
               storedValues.length !== 0 && storedValues.map((value, index) => (
                 <div className="mt-2 pr-3" key={index}>
                   <div className="flex flex-col items-end">
                     <div className="flex flex-row">
-                      <div className="text-right text-xl bg-blue-400 text-white p-3 rounded-l-2xl rounded-br-2xl">
+                      <div className="text-right text-xl bg-blue-gray-800 text-white p-3 rounded-l-2xl rounded-br-2xl">
                         {value.question}
                       </div>
                       <Avatar
