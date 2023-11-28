@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-
 import {
   Typography,
   Card,
@@ -16,7 +15,7 @@ import { Configuration, OpenAIApi } from 'openai';
 import useSpeechToText from 'react-hook-speech-to-text';
 import 'dotenv';
 import axios from "axios";
-
+import BouncingDotsLoader from "@/widgets/cards/loading";
 
 export function Chatbot() {
   const listRef = useRef(null);
@@ -52,10 +51,13 @@ export function Chatbot() {
   const handleSubmit = async (e, t) => {
     e.preventDefault();
 
+    setStoredValues(prev => [...prev, question]);
+    setQuestion("");
+
     axios.post(`${import.meta.env.VITE_SERVER_ENDPOINT}/user_query`, {
       user_id: '123',
       knowledge_id: '234',
-      query: 'explain about react'
+      query: question,
     })
       .then(res => {
         console.log(res);
@@ -97,14 +99,14 @@ export function Chatbot() {
     });
 
     if (response.data.choices[0].text) {
-      setStoredValues([
-        ...storedValues,
-        {
-          question: question,
-          answer: response.data.choices[0].text,
-        },
-      ]);
-      setQuestion("");
+      // setStoredValues([
+      //   ...storedValues,
+      //   {
+      //     question: question,
+      //     answer: response.data.choices[0].text,
+      //   },
+      // ]);
+      setStoredValues(prev => [...prev, response.data.choices[0].text]);
     }
     setLoading(false);
     listRef.current?.lastElementChild?.scrollIntoView();
@@ -146,44 +148,50 @@ export function Chatbot() {
             {
               storedValues.length !== 0 && storedValues.map((value, index) => (
                 <div className="mt-2 pr-3" key={index}>
-                  <div className="flex flex-col items-end">
-                    <div className="flex flex-row">
-                      <div className="text-right text-xl bg-blue-500 text-white p-3 rounded-l-2xl rounded-br-2xl">
-                        {value.question}
-                      </div>
-                      <Avatar
-                        src={'/img/user.jpg'}
-                        alt={'user'}
-                        size="md"
-                        variant="circular"
-                        className={`cursor-pointer border-2 border-white`}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex flex-row">
-                      <Avatar
-                        src={'/img/bot.jpg'}
-                        alt={'user'}
-                        size="xl"
-                        variant="circular"
-                        className={`cursor-pointer border-2 border-white`}
-                      />
-                      <div className="text-xl bg-blue-gray-800 mt-2 p-3 rounded-r-3xl rounded-bl-3xl flex flex-row text-white">
-                        <div>
-                          <AnimationMessage text={value.answer} />
+                  {
+                    index % 2 ? (
+                      <div className="flex flex-row">
+                        <Avatar
+                          src={'/img/bot.jpg'}
+                          alt={'user'}
+                          size="xl"
+                          variant="circular"
+                          className={`cursor-pointer border-2 border-white`}
+                        />
+                        <div className="text-xl bg-blue-gray-800 mt-2 p-3 rounded-r-3xl rounded-bl-3xl flex flex-row text-white items-center">
+                          <div>
+                            {
+                              storedValues.length === index && loading ? (
+                                <BouncingDotsLoader />
+                              ) : (
+                                <AnimationMessage text={value} />
+                              )
+                            }
+                          </div>
+                          <IconButton
+                            variant="text"
+                            onClick={() => copyText(value)}
+                          >
+                            <i className="fas fa-copy fa-lg"></i>
+                          </IconButton >
                         </div>
-                        <IconButton
-                          variant="text"
-                          size="lg"
-                          onClick={() => copyText(value.answer)}
-                        >
-                          <i className="fa-solid fa-copy"></i>
-                        </IconButton >
                       </div>
-
-                    </div>
-                  </div>
+                    ) : (
+                      <div className="flex flex-col items-end">
+                        <div className="flex flex-row">
+                          <div className="text-right text-xl bg-blue-500 text-white p-3 rounded-l-2xl rounded-br-2xl">
+                            {value}
+                          </div>
+                          <Avatar
+                            src={'/img/user.jpg'}
+                            alt={'user'}
+                            size="md"
+                            variant="circular"
+                            className={`cursor-pointer border-2 border-white`}
+                          />
+                        </div>
+                      </div>
+                    )}
                 </div>
               ))
             }

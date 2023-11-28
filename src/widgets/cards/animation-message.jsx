@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-export function AnimationMessage ({ text }) {
+export function AnimationMessage({ text }) {
   const [displayedText, setDisplayedText] = useState('');
 
   useEffect(() => {

@@ -96,7 +96,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
             fullWidth
             onClick={() => handleButton('Update Knowledge')}
           >
-            <i className="fas fa-cog fa-md"></i>
+            <i className="fas fa-cog fa-md" />
           </Button>
         </div>
         <Button
