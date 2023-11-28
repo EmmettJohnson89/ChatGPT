@@ -51,7 +51,10 @@ export function Chatbot() {
   const handleSubmit = async (e, t) => {
     e.preventDefault();
 
-    setStoredValues(prev => [...prev, question]);
+    const loadingValue = storedValues;
+    loadingValue.push(question);
+    loadingValue.push('loading...');
+    setStoredValues(loadingValue);
     setQuestion("");
 
     axios.post(`${import.meta.env.VITE_SERVER_ENDPOINT}/user_query`, {
@@ -83,7 +86,9 @@ export function Chatbot() {
       ...options,
       messages: [{ role: 'user', content: t + question }],
     };
+
     setLoading(true);
+
     const response = await openai.createCompletion({
       model: "text-davinci-003",
       prompt: `${t}${question}`,
@@ -99,14 +104,13 @@ export function Chatbot() {
     });
 
     if (response.data.choices[0].text) {
-      // setStoredValues([
-      //   ...storedValues,
-      //   {
-      //     question: question,
-      //     answer: response.data.choices[0].text,
-      //   },
-      // ]);
-      setStoredValues(prev => [...prev, response.data.choices[0].text]);
+      const newValue = storedValues.map((value, index) => {
+        if (index === storedValues.length - 1) {
+          return response.data.choices[0].text;
+        }
+        return value;
+      });
+      setStoredValues(newValue);
     }
     setLoading(false);
     listRef.current?.lastElementChild?.scrollIntoView();
@@ -150,18 +154,18 @@ export function Chatbot() {
                 <div className="mt-2 pr-3" key={index}>
                   {
                     index % 2 ? (
-                      <div className="flex flex-row">
+                      <div className="flex flex-row items-center">
                         <Avatar
                           src={'/img/bot.jpg'}
                           alt={'user'}
-                          size="xl"
+                          size="md"
                           variant="circular"
                           className={`cursor-pointer border-2 border-white`}
                         />
-                        <div className="text-xl bg-blue-gray-800 mt-2 p-3 rounded-r-3xl rounded-bl-3xl flex flex-row text-white items-center">
+                        <div className="text-xl bg-blue-gray-800 mt-2 p-3 rounded-r-2xl rounded-bl-2xl flex flex-row text-white items-center">
                           <div>
                             {
-                              storedValues.length === index && loading ? (
+                              value === 'loading...' && loading ? (
                                 <BouncingDotsLoader />
                               ) : (
                                 <AnimationMessage text={value} />

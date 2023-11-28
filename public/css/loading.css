@@ -4,11 +4,11 @@
 }
 
 .bouncing-loader > div {
-  width: 12px;
-  height: 12px;
-  margin: 3px;
+  width: 8px;
+  height: 8px;
+  margin: 10px 2px;
   border-radius: 50%;
-  background-color: #a3a1a1;
+  background-color: white;
   opacity: 1;
   animation: bouncing-loader 0.6s infinite alternate;
 }
@@ -16,7 +16,7 @@
 @keyframes bouncing-loader {
   to {
     opacity: 0.1;
-    transform: translateY(-16px);
+    transform: translateY(-6px);
   }
 }
 
