@@ -10,7 +10,7 @@ import {
 } from "@material-tailwind/react";
 import axios from "axios";
 
-export function NewKnowledgeDialog({ open, setOpen }) {
+export function NewKnowledgeDialog({ open, setOpen, type }) {
   const [knowledgeName, setKnowledgeName] = useState('');
   const [knowledgeUrls, setKnowledgeUrls] = useState([{
     id: 0,
@@ -71,24 +71,28 @@ export function NewKnowledgeDialog({ open, setOpen }) {
         <Card className="mx-auto w-full">
           <CardBody className="flex flex-col gap-4">
             <Typography variant="h4" color="blue-gray">
-              New Knowledge Base
+              {`${type === true ? 'New' : 'Update'} Knowledge Base`}
             </Typography>
 
             <hr />
 
             <div className="max-h-[24rem] overflow-y-auto scroll-smooth">
               <div className="flex flex-col gap-4">
-                <Typography className="-mb-2" variant="h6">
-                  Name your knowledge base
-                </Typography>
-                <Input
-                  type="text"
-                  label="Knowledge base name"
-                  name="knowledgeName"
-                  size="lg"
-                  value={knowledgeName}
-                  onChange={(e) => setKnowledgeName(() => e.target.value)}
-                />
+                {type && (
+                  <>
+                    <Typography className="-mb-2" variant="h6">
+                      Name your knowledge base
+                    </Typography>
+                    <Input
+                      type="text"
+                      label="Knowledge base name"
+                      name="knowledgeName"
+                      size="lg"
+                      value={knowledgeName}
+                      onChange={(e) => setKnowledgeName(() => e.target.value)}
+                    />
+                  </>
+                )}
 
                 <Typography className="-mb-2" variant="h6">
                   Upload URL

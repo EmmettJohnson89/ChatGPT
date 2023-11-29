@@ -41,7 +41,7 @@ export function Chatbot() {
   const openai = new OpenAIApi(configuration);
 
   const [question, setQuestion] = useState("");
-  const [storedValues, setStoredValues] = useState([]);
+  const [storedValues, setStoredValues] = useState(["I'm a ChatGPT, How can I assist you?"]);
   const [loading, setLoading] = useState(false);
 
   const copyText = (text) => {
@@ -60,6 +60,7 @@ export function Chatbot() {
     axios.post(`${import.meta.env.VITE_SERVER_ENDPOINT}/user_query`, {
       user_id: '123',
       knowledge_id: '234',
+      chat_id: '',
       query: question,
     })
       .then(res => {
@@ -134,7 +135,7 @@ export function Chatbot() {
 
 
   return (
-    <div className={`${loading ? "cursor-wait" : ""} mt-6 flex  flex-col gap-8 h-full`}>
+    <div className={`${loading ? "cursor-wait" : ""} flex flex-col gap-8 h-full`}>
       <Card className="h-full">
         <CardHeader
           color="transparent"
@@ -146,14 +147,28 @@ export function Chatbot() {
             ChatGPT
           </Typography>
         </CardHeader>
-        <CardBody className="p-0 flex flex-col gap-4 px-2 py-4 md:px-6 lg:px-10 grow">
+        <CardBody className="flex flex-col gap-4 px-2 py-4 md:px-6 grow">
           <div className="overflow-y-auto grow h-0" ref={listRef}>
-            <div className="text-xl bg-blue-gray-800 mt-2 py-2 px-4 rounded-r-3xl rounded-bl-3xl text-white">I'm a ChatGPT, How can I assist you?</div>
             {
               storedValues.length !== 0 && storedValues.map((value, index) => (
                 <div className="mt-2 pr-3" key={index}>
                   {
                     index % 2 ? (
+                      <div className="flex flex-col items-end">
+                        <div className="flex flex-row">
+                          <div className="text-right text-xl bg-blue-500 text-white p-2 rounded-l-2xl rounded-br-2xl items-center">
+                            {value}
+                          </div>
+                          <Avatar
+                            src={'/img/user.jpg'}
+                            alt={'user'}
+                            size="md"
+                            variant="circular"
+                            className={`cursor-pointer border-2 border-white`}
+                          />
+                        </div>
+                      </div>
+                    ) : (
                       <div className="flex flex-row items-center">
                         <Avatar
                           src={'/img/bot.jpg'}
@@ -162,7 +177,7 @@ export function Chatbot() {
                           variant="circular"
                           className={`cursor-pointer border-2 border-white`}
                         />
-                        <div className="text-xl bg-blue-gray-800 mt-2 p-3 rounded-r-2xl rounded-bl-2xl flex flex-row text-white items-center">
+                        <div className="text-xl bg-blue-gray-800 pl-4 rounded-r-2xl rounded-bl-2xl flex flex-row text-white items-center">
                           <div>
                             {
                               value === 'loading...' && loading ? (
@@ -178,21 +193,6 @@ export function Chatbot() {
                           >
                             <i className="fas fa-copy fa-lg"></i>
                           </IconButton >
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="flex flex-col items-end">
-                        <div className="flex flex-row">
-                          <div className="text-right text-xl bg-blue-500 text-white p-3 rounded-l-2xl rounded-br-2xl">
-                            {value}
-                          </div>
-                          <Avatar
-                            src={'/img/user.jpg'}
-                            alt={'user'}
-                            size="md"
-                            variant="circular"
-                            className={`cursor-pointer border-2 border-white`}
-                          />
                         </div>
                       </div>
                     )}
